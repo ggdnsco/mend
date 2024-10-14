@@ -1,0 +1,52 @@
+cabal-version:      3.0
+name:               mend
+version:            0.1.0.0
+synopsis:           Self-hosted software solution for repair shops 
+-- description:
+homepage:           mend.tools
+license:            AGPL-3.0-only
+license-file:       LICENSE
+author:             m4xine
+maintainer:         deandrade@posteo.com
+-- copyright:
+category:           Web
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+extra-source-files: README.md
+
+flag prod
+  description: Compile with extra optimizations for production use
+  default:     False
+  manual:      True
+
+common warnings
+  ghc-options: -Wall
+
+common common-extensions
+    default-language: GHC2021
+
+common common-ghc-options
+  ghc-options:
+    -Wall -Wcompat -Widentities -Wincomplete-record-updates
+    -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
+    -fhide-source-paths -Wno-unused-do-bind -fshow-hole-constraints
+    -Wno-unticked-promoted-constructors -Werror=unused-imports
+    -fdicts-strict -fmax-worker-args=16 -fspec-constr-recursive=16
+    -Wunused-packages
+
+  if flag(prod)
+    ghc-options:
+      -flate-specialise -funbox-strict-fields
+      -finline-generics-aggressively -fexpose-all-unfoldings
+
+executable mend-server
+  import:  warnings
+  import:  common-extensions
+  import:  common-ghc-options
+  main-is: Main.hs
+  -- other-modules:
+  -- other-extensions:
+  build-depends:   
+    , base 
+    , effectful
+  hs-source-dirs:  app/server
